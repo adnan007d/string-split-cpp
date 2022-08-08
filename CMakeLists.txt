@@ -12,15 +12,34 @@ set(SOURCES
     main.cpp
 )
 
-
-
-
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 add_subdirectory(lib)
 include_directories(lib)
 target_link_libraries(${PROJECT_NAME})
 
-add_subdirectory(tests)
 
-add_subdirectory(benchmark)
+
+# Benchmark
+set(BENCHMARK_SOURCES benchmark/main.cpp)
+
+find_package(benchmark REQUIRED)
+find_package(Boost 1.79)  
+
+include_directories(${benchmark_INCLUDE_DIRS})
+
+add_executable(string_split_benchmark ${BENCHMARK_SOURCES})
+target_link_libraries(string_split_benchmark benchmark::benchmark)
+
+# Tests
+
+set(TEST_SOURCES tests/string_split_test.cpp)
+
+add_executable(split_test ${TEST_SOURCES})
+
+enable_testing()
+find_package(GTest REQUIRED)
+
+include_directories(${GTEST_INCLUDE_DIRS})
+
+target_link_libraries(split_test GTest::gtest GTest::gtest_main)
